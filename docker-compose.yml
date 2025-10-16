@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - ./db.sqlite3:/app/db.sqlite3
+    environment:
+      - DJANGO_SETTINGS_MODULE=restaurant_web.settings
+      - EMAIL_HOST_USER=your-gmail@gmail.com
+      - EMAIL_HOST_PASSWORD=your-app-password
+    command: python manage.py runserver 0.0.0.0:8000
