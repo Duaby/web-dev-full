@@ -12,3 +12,13 @@ services:
       - EMAIL_HOST_USER=your-gmail@gmail.com
       - EMAIL_HOST_PASSWORD=your-app-password
     command: python manage.py runserver 0.0.0.0:8000
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=restaurant_db
+      - POSTGRES_USER=restaurant_user
+      - POSTGRES_PASSWORD=restaurant_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+volumes:
+  postgres_data:
