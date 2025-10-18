@@ -1,4 +1,4 @@
-I built this restaurant website with recipe management. I manage recipes, categories, reviews, subscribers, and contact messages. The site includes a web interface and REST API.
+I built this restaurant website with recipe management. to manage recipes, categories, reviews, subscribers, and contact messages. The site includes a web interface and REST API.
 
 How it works:
 1. Users visit the landing page to browse recipes.
