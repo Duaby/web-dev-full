@@ -1,8 +1,8 @@
-This project builds a restaurant website with recipe management. You manage recipes, categories, reviews, subscribers, and contact messages. The site includes a web interface and REST API.
+I built this restaurant website with recipe management. I manage recipes, categories, reviews, subscribers, and contact messages. The site includes a web interface and REST API.
 
 How it works:
 1. Users visit the landing page to browse recipes.
-2. You add and manage recipes through the Django admin panel.
+2. I add and manage recipes through the Django admin panel.
 3. New subscribers receive welcome emails with a sample recipe.
 4. Users submit reviews that require admin approval before display.
 5. Contact messages arrive through forms and appear in admin.
