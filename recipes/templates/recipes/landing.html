@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secret Recipes - Free Download</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,407 +13,666 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            font-family: 'Inter', sans-serif;
+            background: #fff;
+            color: #2c2c2c;
+            overflow-x: hidden;
         }
 
-        .container {
-            max-width: 1200px;
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
             width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #d4622c;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #2c2c2c;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.3s;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-links a:hover {
+            color: #d4622c;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            min-height: 90vh;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            animation: fadeIn 0.8s ease-out;
+            gap: 60px;
+            padding: 80px 5% 60px;
+            align-items: center;
+            background: linear-gradient(135deg, #fef9f5 0%, #fff 100%);
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .hero-content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 64px;
+            font-weight: 900;
+            line-height: 1.1;
+            color: #2c2c2c;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
         }
 
-        .hero-section {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            padding: 60px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: pulse 4s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero-section h1 {
-            color: white;
-            font-size: 3em;
-            margin-bottom: 20px;
-            line-height: 1.2;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .hero-section p {
-            color: rgba(255, 255, 255, 0.95);
-            font-size: 1.2em;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-
-        .recipe-preview {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-top: 30px;
-        }
-
-        .recipe-card {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            padding: 15px;
-            border-radius: 12px;
-            color: white;
-            font-size: 0.9em;
-            transition: transform 0.3s ease;
-        }
-
-        .recipe-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .recipe-card strong {
+        .hero-content .accent {
+            color: #d4622c;
             display: block;
-            margin-bottom: 5px;
-            font-size: 1.1em;
         }
 
-        .form-section {
-            padding: 60px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .form-section h2 {
-            color: #333;
-            font-size: 2em;
-            margin-bottom: 15px;
-        }
-
-        .form-section .subtitle {
+        .hero-content p {
+            font-size: 18px;
+            line-height: 1.7;
             color: #666;
-            font-size: 1.1em;
+            margin-bottom: 40px;
+            font-weight: 400;
+        }
+
+        .stats {
+            display: flex;
+            gap: 40px;
             margin-bottom: 40px;
         }
 
-        .benefits {
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: #d4622c;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 8px;
+        }
+
+        .quick-links {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 50px;
+        }
+
+        .btn {
+            padding: 14px 30px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #d4622c;
+            color: white;
+            border-color: #d4622c;
+        }
+
+        .btn-primary:hover {
+            background: #b8531f;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212, 98, 44, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #2c2c2c;
+            border-color: #ddd;
+        }
+
+        .btn-outline:hover {
+            border-color: #d4622c;
+            color: #d4622c;
+        }
+
+        /* Recipe Grid */
+        .recipe-showcase {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .recipe-item {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .recipe-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .recipe-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8d5c4 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        .recipe-info {
+            padding: 20px;
+        }
+
+        .recipe-info h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #2c2c2c;
+            margin-bottom: 8px;
+        }
+
+        .recipe-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 13px;
+            color: #999;
+        }
+
+        .recipe-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Form Section */
+        .form-container {
+            background: white;
+            border-radius: 24px;
+            padding: 50px;
+            box-shadow: 0 10px 60px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .form-badge {
+            display: inline-block;
+            background: #fef3ed;
+            color: #d4622c;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+        }
+
+        .form-container h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 38px;
+            font-weight: 700;
+            color: #2c2c2c;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .form-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        .benefits-list {
             list-style: none;
             margin-bottom: 40px;
         }
 
-        .benefits li {
+        .benefits-list li {
             padding: 12px 0;
-            color: #444;
-            font-size: 1.05em;
+            font-size: 15px;
+            color: #2c2c2c;
             display: flex;
             align-items: center;
+            gap: 12px;
         }
 
-        .benefits li::before {
+        .benefits-list li:before {
             content: '✓';
-            color: #f5576c;
-            font-weight: bold;
-            font-size: 1.5em;
-            margin-right: 15px;
+            width: 24px;
+            height: 24px;
+            background: #fef3ed;
+            color: #d4622c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
         }
 
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 24px;
         }
 
         .form-group label {
             display: block;
-            color: #333;
             font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 0.95em;
+            color: #2c2c2c;
+            margin-bottom: 10px;
+            font-size: 14px;
+            letter-spacing: 0.3px;
         }
 
         .form-group input {
             width: 100%;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
+            padding: 16px 20px;
+            border: 2px solid #e8e8e8;
             border-radius: 12px;
-            font-size: 1em;
+            font-size: 15px;
             transition: all 0.3s ease;
-            background: #f9f9f9;
+            background: #fafafa;
+            font-family: 'Inter', sans-serif;
         }
 
         .form-group input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #d4622c;
             background: white;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            box-shadow: 0 0 0 4px rgba(212, 98, 44, 0.1);
         }
 
         .submit-btn {
             width: 100%;
             padding: 18px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #d4622c;
             color: white;
             border: none;
             border-radius: 12px;
-            font-size: 1.1em;
-            font-weight: 600;
+            font-size: 15px;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Inter', sans-serif;
         }
 
         .submit-btn:hover {
+            background: #b8531f;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+            box-shadow: 0 10px 30px rgba(212, 98, 44, 0.3);
         }
 
-        .submit-btn:active {
-            transform: translateY(0);
-        }
-
-        .privacy-note {
+        .trust-badge {
             text-align: center;
-            color: #888;
-            font-size: 0.85em;
+            color: #999;
+            font-size: 13px;
             margin-top: 20px;
-        }
-
-        .success-message {
-            display: none;
-            text-align: center;
-            padding: 40px;
-        }
-
-        .success-message.active {
-            display: block;
-        }
-
-        .success-message h3 {
-            color: #4CAF50;
-            font-size: 2em;
-            margin-bottom: 15px;
-        }
-
-        .success-message p {
-            color: #666;
-            font-size: 1.1em;
-        }
-
-        .messages {
-            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid transparent;
-            border-radius: 4px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .alert-success {
-            color: #3c763d;
-            background-color: #dff0d8;
-            border-color: #d6e9c6;
-        }
-
-        .nav-btn {
-            display: inline-block;
-            padding: 12px 24px;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 0.95em;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .nav-btn-primary {
-            background: rgba(102, 126, 234, 0.1);
-            color: #667eea;
-            border-color: #667eea;
-        }
-
-        .nav-btn-primary:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .nav-btn-success {
-            background: rgba(40, 167, 69, 0.1);
-            color: #28a745;
-            border-color: #28a745;
-        }
-
-        .nav-btn-success:hover {
-            background: #28a745;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
         }
 
         .error {
-            color: #a94442;
-            background-color: #f2dede;
-            border-color: #ebccd1;
-            padding: 8px;
-            border-radius: 4px;
-            margin-top: 5px;
-            font-size: 0.9em;
+            color: #dc3545;
+            font-size: 13px;
+            margin-top: 8px;
+            display: block;
         }
 
+        /* Features Section */
+        .features {
+            padding: 100px 5%;
+            background: white;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            max-width: 1200px;
+            margin: 60px auto 0;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: #2c2c2c;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.7;
+        }
+
+        .section-title {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: #2c2c2c;
+            margin-bottom: 20px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Mobile Responsive */
         @media (max-width: 968px) {
-            .container {
+            .hero {
+                grid-template-columns: 1fr;
+                padding: 60px 5% 40px;
+            }
+
+            .hero-content h1 {
+                font-size: 48px;
+            }
+
+            .recipe-showcase {
                 grid-template-columns: 1fr;
             }
 
-            .hero-section, .form-section {
-                padding: 40px;
+            .form-container {
+                padding: 40px 30px;
             }
 
-            .hero-section h1 {
-                font-size: 2.5em;
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .nav-links {
+                gap: 20px;
+            }
+
+            .stats {
+                gap: 30px;
             }
         }
 
         @media (max-width: 480px) {
-            .hero-section, .form-section {
-                padding: 30px;
+            .navbar {
+                padding: 15px 5%;
             }
 
-            .hero-section h1 {
-                font-size: 2em;
+            .logo {
+                font-size: 22px;
             }
 
-            .recipe-preview {
-                grid-template-columns: 1fr;
+            .nav-links {
+                gap: 10px;
+            }
+
+            .nav-links a {
+                font-size: 13px;
+            }
+
+            .hero-content h1 {
+                font-size: 36px;
+            }
+
+            .hero-content p {
+                font-size: 16px;
+            }
+
+            .form-container {
+                padding: 30px 20px;
+            }
+
+            .form-container h2 {
+                font-size: 28px;
+            }
+
+            .quick-links {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .stats {
+                justify-content: space-around;
+            }
+
+            .stat-number {
+                font-size: 32px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="hero-section">
-            <div class="hero-content">
-                <h1>Unlock Our Secret Recipes</h1>
-                <p>Get instant access to our chef's exclusive collection of restaurant-quality recipes. From appetizers to desserts, bring gourmet dining to your kitchen.</p>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">Culinary Secrets</div>
+        <div class="nav-links">
+            <a href="/admin/">Admin</a>
+            <a href="{% url 'recipes:review_form' %}">Reviews</a>
+            <a href="{% url 'recipes:contact_form' %}">Contact</a>
+        </div>
+    </nav>
 
-                <div class="recipe-preview">
-                    <div class="recipe-card">
-                        <strong>🍝 Pasta Carbonara</strong>
-                        <span>Authentic Italian technique</span>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>
+                Master the Art of 
+                <span class="accent">Restaurant Cooking</span>
+            </h1>
+            <p>Join over 50,000 home chefs who've transformed their kitchens with our professional recipe collection. Get instant access to chef-tested techniques and secret ingredients.</p>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-number">15+</span>
+                    <span class="stat-label">Pro Recipes</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">50K+</span>
+                    <span class="stat-label">Happy Chefs</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">4.9★</span>
+                    <span class="stat-label">Avg Rating</span>
+                </div>
+            </div>
+
+            <div class="quick-links">
+                <a href="{% url 'recipes:review_form' %}" class="btn btn-outline">⭐ Submit Review</a>
+                <a href="{% url 'recipes:contact_form' %}" class="btn btn-outline">✉️ Contact Us</a>
+            </div>
+
+            <div class="recipe-showcase">
+                <div class="recipe-item">
+                    <div class="recipe-image">🍝</div>
+                    <div class="recipe-info">
+                        <h3>Pasta Carbonara</h3>
+                        <div class="recipe-meta">
+                            <span>⏱️ 25 mins</span>
+                            <span>👨‍🍳 Medium</span>
+                        </div>
                     </div>
-                    <div class="recipe-card">
-                        <strong>🥩 Ribeye Steak</strong>
-                        <span>Perfect searing method</span>
+                </div>
+
+                <div class="recipe-item">
+                    <div class="recipe-image">🥩</div>
+                    <div class="recipe-info">
+                        <h3>Perfect Ribeye</h3>
+                        <div class="recipe-meta">
+                            <span>⏱️ 20 mins</span>
+                            <span>👨‍🍳 Easy</span>
+                        </div>
                     </div>
-                    <div class="recipe-card">
-                        <strong>🍰 Tiramisu</strong>
-                        <span>Classic Italian dessert</span>
+                </div>
+
+                <div class="recipe-item">
+                    <div class="recipe-image">🍰</div>
+                    <div class="recipe-info">
+                        <h3>Classic Tiramisu</h3>
+                        <div class="recipe-meta">
+                            <span>⏱️ 30 mins</span>
+                            <span>👨‍🍳 Medium</span>
+                        </div>
                     </div>
-                    <div class="recipe-card">
-                        <strong>🍤 Garlic Shrimp</strong>
-                        <span>Chef's special marinade</span>
+                </div>
+
+                <div class="recipe-item">
+                    <div class="recipe-image">🍤</div>
+                    <div class="recipe-info">
+                        <h3>Garlic Shrimp</h3>
+                        <div class="recipe-meta">
+                            <span>⏱️ 15 mins</span>
+                            <span>👨‍🍳 Easy</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="form-section">
-            <div id="formContent">
-                <h2>Get Your Free Recipes</h2>
-                <p class="subtitle">Join over 50,000 home chefs who've elevated their cooking</p>
+        <!-- Form Section -->
+        <div class="form-container">
+            <span class="form-badge">🎁 Free Download</span>
+            <h2>Get Your Recipe Collection</h2>
+            <p class="form-subtitle">Unlock professional cooking techniques and elevate your culinary skills today.</p>
 
-                <ul class="benefits">
-                    <li>15+ Professional recipes</li>
-                    <li>Step-by-step instructions</li>
-                    <li>Pro cooking tips & tricks</li>
-                    <li>Ingredient substitutions</li>
-                </ul>
+            <ul class="benefits-list">
+                <li>15+ restaurant-quality recipes</li>
+                <li>Step-by-step video tutorials</li>
+                <li>Pro cooking tips & techniques</li>
+                <li>Ingredient substitution guide</li>
+                <li>Lifetime recipe updates</li>
+            </ul>
 
-                <div class="text-center mb-4">
-                    <a href="{% url 'recipes:review_form' %}" class="nav-btn nav-btn-primary me-3">
-                        <i class="fas fa-star"></i> Submit Review
-                    </a>
-                    <a href="{% url 'recipes:contact_form' %}" class="nav-btn nav-btn-success">
-                        <i class="fas fa-envelope"></i> Contact Us
-                    </a>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success">
+                        ✓ {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ form.name.id_for_label }}">Full Name</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                        <span class="error">{{ form.name.errors }}</span>
+                    {% endif %}
                 </div>
 
-                {% if messages %}
-                    <div class="messages">
-                        {% for message in messages %}
-                            <div class="alert alert-success">{{ message }}</div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}">Email Address</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <span class="error">{{ form.email.errors }}</span>
+                    {% endif %}
+                </div>
 
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label for="{{ form.name.id_for_label }}">Your Name</label>
-                        {{ form.name }}
-                        {% if form.name.errors %}
-                            <div class="error">{{ form.name.errors }}</div>
-                        {% endif %}
-                    </div>
+                <button type="submit" class="submit-btn">Get Free Recipes Now</button>
 
-                    <div class="form-group">
-                        <label for="{{ form.email.id_for_label }}">Email Address</label>
-                        {{ form.email }}
-                        {% if form.email.errors %}
-                            <div class="error">{{ form.email.errors }}</div>
-                        {% endif %}
-                    </div>
+                <p class="trust-badge">
+                    🔒 100% Secure. No spam, unsubscribe anytime.
+                </p>
+            </form>
+        </div>
+    </section>
 
-                    <button type="submit" class="submit-btn">Download Free Recipes</button>
+    <!-- Features Section -->
+    <section class="features">
+        <h2 class="section-title">Why Choose Our Recipes?</h2>
+        <p class="section-subtitle">Professional techniques made simple for home cooks. Learn from award-winning chefs.</p>
 
-                    <p class="privacy-note">🔒 We respect your privacy. No spam, unsubscribe anytime.</p>
-                </form>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">👨‍🍳</div>
+                <h3>Chef-Tested</h3>
+                <p>Every recipe is perfected by professional chefs with decades of experience in top restaurants.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📹</div>
+                <h3>Video Guides</h3>
+                <p>Follow along with detailed video tutorials showing every technique and step in real-time.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Quick & Easy</h3>
+                <p>Most recipes take under 30 minutes with simple ingredients you already have at home.</p>
             </div>
         </div>
-    </div>
+    </section>
 </body>
 </html>
