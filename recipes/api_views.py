@@ -182,8 +182,7 @@ class ReviewListCreateAPIView(generics.ListCreateAPIView):
     queryset = Review.objects.filter(is_approved=True)
     serializer_class = ReviewSerializer
     pagination_class = StandardResultsPagination
-    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['recipe', 'rating']
+    filter_backends = [filters.OrderingFilter]
     ordering_fields = ['created_at', 'rating']
 
 

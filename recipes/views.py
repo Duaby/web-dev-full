@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.mail import send_mail, EmailMessage
 from django.conf import settings
-from .forms import SubscriberForm
+from .forms import SubscriberForm, ReviewForm, ContactForm
 
 def landing_page(request):
     if request.method == 'POST':
@@ -105,3 +105,29 @@ P.S. More recipes coming soon - stay tuned!
         form = SubscriberForm()
 
     return render(request, 'recipes/landing.html', {'form': form})
+
+
+def review_form(request):
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save()
+            messages.success(request, 'Thank you for your review! It will be published after approval by our team.')
+            return redirect('recipes:review_form')
+    else:
+        form = ReviewForm()
+
+    return render(request, 'recipes/review_form.html', {'form': form})
+
+
+def contact_form(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            contact_message = form.save()
+            messages.success(request, 'Thank you for your message! We will get back to you soon.')
+            return redirect('recipes:contact_form')
+    else:
+        form = ContactForm()
+
+    return render(request, 'recipes/contact_form.html', {'form': form})

@@ -1,0 +1,35 @@
+How to Subscribe and Receive Recipes
+
+Follow these steps to subscribe to the restaurant recipe service and receive recipes by email.
+
+Prerequisites
+Make sure the Django server runs. Start it with python manage.py runserver. Access the site at http://127.0.0.1:8000.
+
+Steps to Subscribe
+
+1. Open your web browser.
+2. Go to the landing page at http://127.0.0.1:8000.
+3. Find the subscription form on the page.
+4. Enter your full name in the name field.
+5. Enter your email address in the email field.
+6. Click the submit button.
+7. You see a success message on the page.
+
+What Happens Next
+
+The system saves your information as a subscriber.
+It sends a welcome email to your address.
+The email contains sample recipes.
+Check your email inbox for the message.
+If you do not see it, check your spam folder.
+
+Troubleshooting
+
+If the email does not arrive, verify your email address is correct.
+Ensure the server has email settings configured.
+Check the server logs for errors.
+Try subscribing again with a different email if needed.
+
+Contact Support
+
+If issues persist, contact the site administrator.

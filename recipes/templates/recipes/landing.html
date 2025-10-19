@@ -254,6 +254,45 @@
             border-color: #d6e9c6;
         }
 
+        .nav-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-btn-primary {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border-color: #667eea;
+        }
+
+        .nav-btn-primary:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn-success {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            border-color: #28a745;
+        }
+
+        .nav-btn-success:hover {
+            background: #28a745;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+        }
+
         .error {
             color: #a94442;
             background-color: #f2dede;
@@ -332,6 +371,15 @@
                     <li>Pro cooking tips & tricks</li>
                     <li>Ingredient substitutions</li>
                 </ul>
+
+                <div class="text-center mb-4">
+                    <a href="{% url 'recipes:review_form' %}" class="nav-btn nav-btn-primary me-3">
+                        <i class="fas fa-star"></i> Submit Review
+                    </a>
+                    <a href="{% url 'recipes:contact_form' %}" class="nav-btn nav-btn-success">
+                        <i class="fas fa-envelope"></i> Contact Us
+                    </a>
+                </div>
 
                 {% if messages %}
                     <div class="messages">
