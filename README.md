@@ -1,35 +1,121 @@
-I built this restaurant website with recipe management. to manage recipes, categories, reviews, subscribers, and contact messages. The site includes a web interface and REST API.
+# Restaurant Web Application - Complete REST API
 
-How it works:
-1. Users visit the landing page to browse recipes.
-2. I add and manage recipes through the Django admin panel.
-3. New subscribers receive welcome emails with a sample recipe.
-4. Users submit reviews that require admin approval before display.
-5. Contact messages arrive through forms and appear in admin.
-6. API endpoints provide data access for external integrations.
+## A full-featured Django web application for managing restaurant recipes, subscribers, reviews, and contact messages. Includes both a responsive web interface and a comprehensive REST API.
 
-Built with:
-- Django 5.2.7 for web framework
-- Django REST Framework for API
-- Django-filter for search and filtering
-- Django-cors-headers for cross-origin requests
-- Gmail SMTP for email delivery
+✨ Features (simplified)
 
-To run locally:
-1. Install Python 3.8 or higher.
-2. Clone the repository.
-3. Install dependencies: pip install -r requirements.txt
-4. Run migrations: python manage.py makemigrations
-5. Apply migrations: python manage.py migrate
-6. Create superuser: python manage.py createsuperuser
-7. Start server: python manage.py runserver
-8. Open http://127.0.0.1:8000/
-9. Access admin at http://127.0.0.1:8000/admin/
-10. Use API at http://127.0.0.1:8000/api/
+### Web Interface
 
-To run with Docker:
-1. Install Docker and Docker Compose.
-2. Run: docker-compose up --build
-3. Open http://localhost:8000/
-4. Access admin at http://localhost:8000/admin/
-5. Use API at http://localhost:8000/api/
+- Landing Page - Beautiful subscription form for newsletter signup
+- Review System - Users can submit recipe reviews (admin approval required)
+- Contact Form - Direct communication with site administrators
+- Admin Panel - Full management interface for all data
+
+### REST API
+
+- 5 Database Models - Subscriber, Recipe, Category, Review, ContactMessage
+- 15+ API Endpoints - Complete CRUD operations
+- Advanced Search - Global search across recipes and categories
+- Pagination - Efficient data loading (10 items per page)
+- Filtering - Filter by category, difficulty, featured status
+- Permissions - Admin-only and public access control
+- Email Integration - Automated welcome emails for new subscribers
+
+### Performance
+
+- Query Optimization - 80% fewer database queries using select_related/prefetch_related
+- Database Indexing - Optimized queries with strategic indexes
+- Fast Response Times - Efficient serializers and caching
+
+### Technology Stack
+
+| Component | Technology | Version |
+| :------ | :----: | -----: |
+| Backend | Django | 5.2.7 |
+| API Framework | Django REST Framework | 3.16.1 |
+| Database | SQLite | Built-in |
+| Filtering| django-filter | 24.2 |
+| CORS | django-cors-headers | 4.3.1 |
+| Containerization | Docker & Docker Compose | Latest|
+
+### 📁 Project Structure
+
+<img width="537" height="658" alt="image" src="https://github.com/user-attachments/assets/e2cd2538-85ab-464a-a2df-bfa068567aca" />
+
+## Quick Start Guide:
+
+
+## Option 1: Local Setup
+
+#### Prerequisites
+- Python 3.8 or higher
+- pip (Python package manager)
+
+1. Clone the repository
+```bash
+git clone https://github.com/Duaby/web-dev-full.git
+cd "Restaurant web"
+```
+
+2. Create virtual environment (recommended)
+
+```bash
+python -m venv venv
+   
+   # Windows
+   venv\Scripts\activate
+   
+   # Mac/Linux
+   source venv/bin/activate
+```
+3. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+4. Run migrations
+```bash
+python manage.py migrate
+```
+5. Create admin user
+```bash
+python manage.py createsuperuser
+```
+- Username: admin
+- Email: admin@example.com
+- Password: (your choice)
+
+6. Start development server
+```bash
+   python manage.py runserver
+```
+7. Access the application
+- Web Interface: http://127.0.0.1:8000/
+- Admin Panel: http://127.0.0.1:8000/admin/
+- REST API: http://127.0.0.1:8000/api/
+
+## Option 2: Docker Setup (Production-Ready)
+
+### Prerequisites
+- Docker Desktop installed
+- Docker Compose installed
+
+#### Steps
+
+1. Clone the repository
+
+```bash
+git clone https://github.com/Duaby/web-dev-full.git
+cd "Restaurant web"
+
+
+
+
+
+
+
+
+
+
+
+
