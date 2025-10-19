@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   web:
     build: .
@@ -6,19 +5,15 @@ services:
       - "8000:8000"
     volumes:
       - .:/app
-      - ./db.sqlite3:/app/db.sqlite3
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
     environment:
       - DJANGO_SETTINGS_MODULE=restaurant_web.settings
-      - EMAIL_HOST_USER=your-gmail@gmail.com
-      - EMAIL_HOST_PASSWORD=your-app-password
-    command: python manage.py runserver 0.0.0.0:8000
-  db:
-    image: postgres:13
-    environment:
-      - POSTGRES_DB=restaurant_db
-      - POSTGRES_USER=restaurant_user
-      - POSTGRES_PASSWORD=restaurant_password
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - PYTHONUNBUFFERED=1
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+
 volumes:
-  postgres_data:
+  static_volume:
+  media_volume:

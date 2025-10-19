@@ -1,17 +1,19 @@
 from rest_framework import generics, filters, status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
 from django.core.mail import send_mail
 from django.conf import settings
-from django.db.models import Avg, Count, Q  # ADDED - For optimized queries
+from django.db.models import Avg, Count, Q
 from .models import Subscriber, Category, Recipe, Review, ContactMessage
 from .serializers import (
     SubscriberSerializer, CategorySerializer, RecipeListSerializer,
     RecipeDetailSerializer, ReviewSerializer, ContactMessageSerializer,
     RecipeCreateUpdateSerializer
 )
+from .permissions import IsAdminOrReadOnly, IsAuthenticatedOrPostOnly
 import logging
 
 # Setup logging
@@ -27,8 +29,8 @@ class StandardResultsPagination(PageNumberPagination):
 # ===== SUBSCRIBER ENDPOINTS =====
 class SubscriberListCreateAPIView(generics.ListCreateAPIView):
     """
-    GET: List all subscribers
-    POST: Create new subscriber and send welcome email
+    GET: List all subscribers (Admin only)
+    POST: Create new subscriber and send welcome email (Public)
     """
     queryset = Subscriber.objects.all()
     serializer_class = SubscriberSerializer
@@ -36,16 +38,23 @@ class SubscriberListCreateAPIView(generics.ListCreateAPIView):
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name', 'email']
     ordering_fields = ['subscribed_at', 'name']
-    ordering = ['-subscribed_at']  # ADDED - Default ordering
+    ordering = ['-subscribed_at']
+    permission_classes = [IsAuthenticatedOrPostOnly]  # ADDED
+
+    def get_queryset(self):
+        """Admin sees all, others see nothing on GET"""
+        if self.request.method == 'GET':
+            if self.request.user and self.request.user.is_staff:
+                return Subscriber.objects.all()
+            return Subscriber.objects.none()
+        return Subscriber.objects.all()
 
     def perform_create(self, serializer):
         subscriber = serializer.save()
-        # Send welcome email asynchronously in production
         try:
             self.send_welcome_email(subscriber)
         except Exception as e:
             logger.error(f"Failed to send welcome email to {subscriber.email}: {e}")
-            # Don't fail the request if email fails
 
     def send_welcome_email(self, subscriber):
         """Send welcome email with recipe"""
@@ -81,35 +90,34 @@ The Restaurant Team
             message,
             settings.DEFAULT_FROM_EMAIL,
             [subscriber.email],
-            fail_silently=True,  # Changed to True for better error handling
+            fail_silently=True,
         )
 
 
 class SubscriberRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     """
-    GET: Retrieve single subscriber
-    PUT/PATCH: Update subscriber
-    DELETE: Delete subscriber
+    GET/PUT/PATCH/DELETE: Subscriber operations (Admin only)
     """
     queryset = Subscriber.objects.all()
     serializer_class = SubscriberSerializer
     lookup_field = 'pk'
+    permission_classes = [IsAdminOrReadOnly]  # ADDED
 
 
 # ===== CATEGORY ENDPOINTS =====
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
     """
-    GET: List all categories
-    POST: Create new category
+    GET: List all categories (Public)
+    POST: Create new category (Admin only)
     """
     serializer_class = CategorySerializer
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name', 'description']
     ordering_fields = ['name', 'created_at']
-    ordering = ['name']  # ADDED - Default ordering
+    ordering = ['name']
+    permission_classes = [IsAdminOrReadOnly]  # ADDED
     
     def get_queryset(self):
-        # OPTIMIZED - Prefetch recipe count
         return Category.objects.annotate(
             recipe_count=Count('recipes')
         )
@@ -117,30 +125,30 @@ class CategoryListCreateAPIView(generics.ListCreateAPIView):
 
 class CategoryRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     """
-    GET: Retrieve single category
-    PUT/PATCH: Update category
-    DELETE: Delete category
+    GET: Retrieve single category (Public)
+    PUT/PATCH/DELETE: Update/delete category (Admin only)
     """
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     lookup_field = 'slug'
+    permission_classes = [IsAdminOrReadOnly]  # ADDED
 
 
 # ===== RECIPE ENDPOINTS =====
 class RecipeListCreateAPIView(generics.ListCreateAPIView):
     """
-    GET: List all recipes (with filtering, search, ordering)
-    POST: Create new recipe
+    GET: List all recipes (Public)
+    POST: Create new recipe (Admin only)
     """
     pagination_class = StandardResultsPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['category', 'difficulty', 'is_featured']
     search_fields = ['title', 'description', 'ingredients']
     ordering_fields = ['created_at', 'title', 'prep_time', 'cook_time']
-    ordering = ['-created_at']  # ADDED - Default ordering
+    ordering = ['-created_at']
+    permission_classes = [IsAdminOrReadOnly]  # ADDED
 
     def get_queryset(self):
-        # OPTIMIZED - Use select_related and prefetch_related
         return Recipe.objects.select_related(
             'category', 'author'
         ).prefetch_related(
@@ -156,7 +164,6 @@ class RecipeListCreateAPIView(generics.ListCreateAPIView):
         return RecipeListSerializer
 
     def perform_create(self, serializer):
-        # Automatically set author to current user if authenticated
         serializer.save(
             author=self.request.user if self.request.user.is_authenticated else None
         )
@@ -164,14 +171,13 @@ class RecipeListCreateAPIView(generics.ListCreateAPIView):
 
 class RecipeRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     """
-    GET: Retrieve single recipe with full details
-    PUT/PATCH: Update recipe
-    DELETE: Delete recipe
+    GET: Retrieve single recipe (Public)
+    PUT/PATCH/DELETE: Update/delete recipe (Admin only)
     """
     lookup_field = 'slug'
+    permission_classes = [IsAdminOrReadOnly]  # ADDED
     
     def get_queryset(self):
-        # OPTIMIZED - Prefetch related data
         return Recipe.objects.select_related(
             'category', 'author'
         ).prefetch_related(
@@ -185,23 +191,25 @@ class RecipeRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 
 @api_view(['GET'])
+@permission_classes([AllowAny])  # ADDED
 def featured_recipes(request):
-    """Get all featured recipes"""
+    """Get all featured recipes (Public)"""
     recipes = Recipe.objects.filter(
         is_featured=True
     ).select_related(
         'category', 'author'
     ).prefetch_related(
         'reviews'
-    )[:6]  # Limit to 6 featured recipes
+    )[:6]
     
     serializer = RecipeListSerializer(recipes, many=True)
     return Response(serializer.data)
 
 
 @api_view(['GET'])
+@permission_classes([AllowAny])  # ADDED
 def recipe_by_category(request, slug):
-    """Get all recipes in a specific category"""
+    """Get all recipes in a specific category (Public)"""
     try:
         category = Category.objects.get(slug=slug)
         recipes = Recipe.objects.filter(
@@ -226,19 +234,21 @@ def recipe_by_category(request, slug):
 # ===== REVIEW ENDPOINTS =====
 class ReviewListCreateAPIView(generics.ListCreateAPIView):
     """
-    GET: List all reviews
-    POST: Create new review
+    GET: List all approved reviews (Public)
+    POST: Create new review (Public)
     """
     serializer_class = ReviewSerializer
     pagination_class = StandardResultsPagination
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['recipe', 'rating', 'is_approved']  # ADDED is_approved
+    filterset_fields = ['recipe', 'rating']
     ordering_fields = ['created_at', 'rating']
-    ordering = ['-created_at']  # ADDED - Default ordering
+    ordering = ['-created_at']
+    permission_classes = [AllowAny]  # ADDED - Allow anyone to submit reviews
     
     def get_queryset(self):
-        # OPTIMIZED - Select related recipe
         # Only show approved reviews to public
+        if self.request.user and self.request.user.is_staff:
+            return Review.objects.select_related('recipe')
         return Review.objects.filter(
             is_approved=True
         ).select_related('recipe')
@@ -246,24 +256,25 @@ class ReviewListCreateAPIView(generics.ListCreateAPIView):
 
 class ReviewRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     """
-    GET: Retrieve single review
-    PUT/PATCH: Update review
-    DELETE: Delete review
+    GET: Retrieve single review (Public if approved)
+    PUT/PATCH/DELETE: Update/delete review (Admin only)
     """
-    queryset = Review.objects.select_related('recipe')  # OPTIMIZED
+    queryset = Review.objects.select_related('recipe')
     serializer_class = ReviewSerializer
     lookup_field = 'pk'
+    permission_classes = [IsAdminOrReadOnly]  # ADDED
 
 
 @api_view(['GET'])
+@permission_classes([AllowAny])  # ADDED
 def recipe_reviews(request, recipe_slug):
-    """Get all approved reviews for a specific recipe"""
+    """Get all approved reviews for a specific recipe (Public)"""
     try:
         recipe = Recipe.objects.get(slug=recipe_slug)
         reviews = Review.objects.filter(
             recipe=recipe,
             is_approved=True
-        ).select_related('recipe')  # OPTIMIZED
+        ).select_related('recipe')
         
         serializer = ReviewSerializer(reviews, many=True)
         return Response(serializer.data)
@@ -277,51 +288,66 @@ def recipe_reviews(request, recipe_slug):
 # ===== CONTACT MESSAGE ENDPOINTS =====
 class ContactMessageListCreateAPIView(generics.ListCreateAPIView):
     """
-    GET: List all contact messages
-    POST: Submit new contact message
+    GET: List all contact messages (Admin only)
+    POST: Submit new contact message (Public)
     """
     queryset = ContactMessage.objects.all()
     serializer_class = ContactMessageSerializer
     pagination_class = StandardResultsPagination
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['is_read']  # ADDED - Filter by read status
+    filterset_fields = ['is_read']
     ordering_fields = ['created_at', 'is_read']
-    ordering = ['-created_at']  # ADDED - Default ordering
+    ordering = ['-created_at']
+    permission_classes = [IsAuthenticatedOrPostOnly]  # ADDED
+
+    def get_queryset(self):
+        """Admin sees all, others see nothing on GET"""
+        if self.request.method == 'GET':
+            if self.request.user and self.request.user.is_staff:
+                return ContactMessage.objects.all()
+            return ContactMessage.objects.none()
+        return ContactMessage.objects.all()
 
 
 class ContactMessageRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     """
-    GET: Retrieve single contact message
-    PUT/PATCH: Update message (e.g., mark as read)
-    DELETE: Delete message
+    GET/PUT/PATCH/DELETE: Contact message operations (Admin only)
     """
     queryset = ContactMessage.objects.all()
     serializer_class = ContactMessageSerializer
     lookup_field = 'pk'
+    permission_classes = [IsAdminOrReadOnly]  # ADDED
 
 
 # ===== STATISTICS ENDPOINT =====
 @api_view(['GET'])
+@permission_classes([AllowAny])  # ADDED
 def api_statistics(request):
-    """Get overall API statistics with optimized queries"""
-    # OPTIMIZED - Use aggregation instead of multiple count queries
+    """Get overall API statistics (Public)"""
     stats = {
         'total_subscribers': Subscriber.objects.filter(is_active=True).count(),
         'total_recipes': Recipe.objects.count(),
         'total_categories': Category.objects.count(),
         'total_reviews': Review.objects.filter(is_approved=True).count(),
         'featured_recipes': Recipe.objects.filter(is_featured=True).count(),
-        'pending_reviews': Review.objects.filter(is_approved=False).count(),
-        'unread_messages': ContactMessage.objects.filter(is_read=False).count(),
     }
+    
+    # Add admin-only stats
+    if request.user and request.user.is_staff:
+        stats.update({
+            'pending_reviews': Review.objects.filter(is_approved=False).count(),
+            'unread_messages': ContactMessage.objects.filter(is_read=False).count(),
+        })
+    
     return Response(stats)
 
 
-# ===== NEW: SEARCH ENDPOINT =====
+# ===== SEARCH ENDPOINT =====
 @api_view(['GET'])
+@permission_classes([AllowAny])  # ADDED
 def global_search(request):
     """
-    Global search across recipes, categories, and reviews
+    Global search across recipes and categories (Public)
     Query parameter: ?q=search_term
     """
     query = request.GET.get('q', '').strip()
