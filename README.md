@@ -2,7 +2,7 @@
 
 ## A full-featured Django web application for managing restaurant recipes, subscribers, reviews, and contact messages. Includes both a responsive web interface and a comprehensive REST API.
 
-✨ Features (simplified)
+## ✨ Features (simplified)
 
 ### Web Interface
 
