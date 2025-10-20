@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Culinary Secrets</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            color: #2c2c2c;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: white;
+            padding: 20px 5%;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #d4622c;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #2c2c2c;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #d4622c;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #d4622c, #b8531f);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 5%;
+        }
+
+        /* Header */
+        .page-header {
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            font-weight: 900;
+            color: #2c2c2c;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            font-size: 16px;
+            color: #666;
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 16px 20px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: #d4622c;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: #d4622c;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #b8531f;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 98, 44, 0.3);
+        }
+
+        .btn-outline {
+            background: white;
+            color: #2c2c2c;
+            border: 2px solid #e8e8e8;
+        }
+
+        .btn-outline:hover {
+            border-color: #d4622c;
+            color: #d4622c;
+        }
+
+        /* Section */
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #2c2c2c;
+        }
+
+        /* Recipe Cards */
+        .recipes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .recipe-card {
+            background: #fafafa;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 2px solid #f0f0f0;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+
+        .recipe-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8d5c4 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        .recipe-content {
+            padding: 20px;
+        }
+
+        .recipe-status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-draft {
+            background: #e7e7e7;
+            color: #666;
+        }
+
+        .recipe-content h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #2c2c2c;
+            margin-bottom: 10px;
+        }
+
+        .recipe-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 15px;
+        }
+
+        .recipe-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 13px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background: #e8f4ff;
+            color: #0066cc;
+        }
+
+        .btn-edit:hover {
+            background: #0066cc;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #fee;
+            color: #dc3545;
+        }
+
+        .btn-delete:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+        .rejection-reason {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            margin-top: 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #856404;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        /* Favorites */
+        .favorites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .favorite-card {
+            background: white;
+            border: 2px solid #f0f0f0;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .favorite-card:hover {
+            border-color: #d4622c;
+            transform: translateY(-4px);
+        }
+
+        .favorite-image {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, #fef9f5 0%, #f5e6d3 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        .favorite-content {
+            padding: 16px;
+        }
+
+        .favorite-content h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .favorite-content p {
+            font-size: 13px;
+            color: #999;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .page-header h1 {
+                font-size: 32px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .recipes-grid,
+            .favorites-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="{% url 'recipes:landing_page' %}" class="logo">Culinary Secrets</a>
+        <div class="nav-links">
+            <a href="{% url 'recipes:landing_page' %}">Home</a>
+            <a href="{% url 'accounts:guest_recipes' %}">Guest Recipes</a>
+            <a href="{% url 'accounts:favorites' %}">My Favorites</a>
+            <div class="user-menu">
+                <a href="{% url 'accounts:profile' %}">Profile</a>
+                <div class="user-avatar">{{ user.first_name.0|upper }}{{ user.last_name.0|upper }}</div>
+                <a href="{% url 'accounts:logout' %}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>Welcome back, {{ user.first_name }}! 👋</h1>
+            <p>Manage your recipes, track submissions, and explore your culinary journey.</p>
+        </div>
+
+        <!-- Alert Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    ✓ {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📝</div>
+                <div class="stat-number">{{ stats.total }}</div>
+                <div class="stat-label">Total Recipes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-number">{{ stats.approved }}</div>
+                <div class="stat-label">Approved</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-number">{{ stats.pending }}</div>
+                <div class="stat-label">Pending Review</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">❤️</div>
+                <div class="stat-number">{{ favorites.count }}</div>
+                <div class="stat-label">Favorites</div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="{% url 'accounts:submit_recipe' %}" class="btn btn-primary">➕ Submit New Recipe</a>
+            <a href="{% url 'accounts:favorites' %}" class="btn btn-outline">❤️ View All Favorites</a>
+            <a href="{% url 'accounts:guest_recipes' %}" class="btn btn-outline">🌟 Browse Guest Recipes</a>
+        </div>
+
+        <!-- My Recipes Section -->
+        <div class="section">
+            <div class="section-header">
+                <h2>My Recipes</h2>
+            </div>
+
+            {% if recipes %}
+                <div class="recipes-grid">
+                    {% for recipe in recipes %}
+                        <div class="recipe-card">
+                            <div class="recipe-image">
+                                {% if recipe.category.name == "Italian" %}🍝
+                                {% elif recipe.category.name == "American" %}🍔
+                                {% elif recipe.category.name == "Asian" %}🍜
+                                {% elif recipe.category.name == "Mexican" %}🌮
+                                {% elif recipe.category.name == "Desserts" %}🍰
+                                {% else %}🍴{% endif %}
+                            </div>
+                            <div class="recipe-content">
+                                <span class="recipe-status status-{{ recipe.approval_status }}">
+                                    {{ recipe.get_approval_status_display }}
+                                </span>
+                                <h3>{{ recipe.title }}</h3>
+                                <div class="recipe-meta">
+                                    <span>⏱️ {{ recipe.total_time }} min</span>
+                                    <span>👨‍🍳 {{ recipe.get_difficulty_display }}</span>
+                                    {% if recipe.review_count %}
+                                        <span>⭐ {{ recipe.avg_rating|floatformat:1 }} ({{ recipe.review_count }})</span>
+                                    {% endif %}
+                                </div>
+                                
+                                {% if recipe.rejection_reason %}
+                                    <div class="rejection-reason">
+                                        <strong>Rejection Reason:</strong><br>
+                                        {{ recipe.rejection_reason }}
+                                    </div>
+                                {% endif %}
+
+                                <div class="recipe-actions">
+                                    <a href="{% url 'accounts:recipe_detail' recipe.slug %}" class="btn-small btn-edit">View</a>
+                                    <a href="{% url 'accounts:edit_recipe' recipe.slug %}" class="btn-small btn-edit">Edit</a>
+                                    <a href="{% url 'accounts:delete_recipe' recipe.slug %}" class="btn-small btn-delete">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">📝</div>
+                    <h3>No recipes yet</h3>
+                    <p>Start sharing your culinary creations!</p>
+                    <a href="{% url 'accounts:submit_recipe' %}" class="btn btn-primary" style="margin-top: 20px; display: inline-block;">Submit Your First Recipe</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Recent Favorites -->
+        {% if favorites %}
+        <div class="section">
+            <div class="section-header">
+                <h2>Recent Favorites</h2>
+                <a href="{% url 'accounts:favorites' %}" style="color: #d4622c; font-weight: 600; font-size: 14px;">View All →</a>
+            </div>
+
+            <div class="favorites-grid">
+                {% for favorite in favorites %}
+                    <a href="{% url 'accounts:recipe_detail' favorite.recipe.slug %}" style="text-decoration: none; color: inherit;">
+                        <div class="favorite-card">
+                            <div class="favorite-image">
+                                {% if favorite.recipe.category.name == "Italian" %}🍝
+                                {% elif favorite.recipe.category.name == "American" %}🍔
+                                {% elif favorite.recipe.category.name == "Asian" %}🍜
+                                {% elif favorite.recipe.category.name == "Mexican" %}🌮
+                                {% elif favorite.recipe.category.name == "Desserts" %}🍰
+                                {% else %}🍴{% endif %}
+                            </div>
+                            <div class="favorite-content">
+                                <h4>{{ favorite.recipe.title }}</h4>
+                                <p>{{ favorite.recipe.category.name }} • {{ favorite.recipe.total_time }} min</p>
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

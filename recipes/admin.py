@@ -29,31 +29,31 @@ class CategoryAdmin(admin.ModelAdmin):
     recipe_count.short_description = 'Number of Recipes'
 
 
-@admin.register(Recipe)
-class RecipeAdmin(admin.ModelAdmin):
-    list_display = ['title', 'category', 'difficulty', 'total_time', 'is_featured', 'created_at']
-    list_filter = ['category', 'difficulty', 'is_featured', 'created_at']
-    search_fields = ['title', 'description', 'ingredients']
-    prepopulated_fields = {'slug': ('title',)}
-    date_hierarchy = 'created_at'
-    readonly_fields = ['created_at', 'updated_at']
-    actions = ['mark_as_featured', 'unmark_as_featured']
+# @admin.register(Recipe)
+# class RecipeAdmin(admin.ModelAdmin):
+  #  list_display = ['title', 'category', 'difficulty', 'total_time', 'is_featured', 'created_at']
+  #  list_filter = ['category', 'difficulty', 'is_featured', 'created_at']
+  #  search_fields = ['title', 'description', 'ingredients']
+  #  prepopulated_fields = {'slug': ('title',)}
+  #  date_hierarchy = 'created_at'
+  #  readonly_fields = ['created_at', 'updated_at']
+  #  actions = ['mark_as_featured', 'unmark_as_featured']
 
-    fieldsets = (
-        ('Basic Information', {
-            'fields': ('title', 'slug', 'description', 'category', 'author')
-        }),
-        ('Recipe Details', {
-            'fields': ('ingredients', 'instructions', 'prep_time', 'cook_time', 'servings', 'difficulty')
-        }),
-        ('Media & Status', {
-            'fields': ('image_url', 'is_featured')
-        }),
-        ('Timestamps', {
-            'fields': ('created_at', 'updated_at'),
-            'classes': ('collapse',)
-        }),
-    )
+  #  fieldsets = (
+  #      ('Basic Information', {
+  #          'fields': ('title', 'slug', 'description', 'category', 'author')
+  #      }),
+  #      ('Recipe Details', {
+  #          'fields': ('ingredients', 'instructions', 'prep_time', 'cook_time', 'servings', 'difficulty')
+  #      }),
+  #      ('Media & Status', {
+   #         'fields': ('image_url', 'is_featured')
+  #      }),
+  #      ('Timestamps', {
+  #          'fields': ('created_at', 'updated_at'),
+  #          'classes': ('collapse',)
+  #      }),
+  #  )
 
     def mark_as_featured(self, request, queryset):
         queryset.update(is_featured=True)

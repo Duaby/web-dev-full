@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     
     # Your apps
     'recipes',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -208,3 +209,6 @@ LOGGING = {
         },
     },
 }
+LOGIN_URL = 'accounts:login'
+LOGIN_REDIRECT_URL = 'accounts:dashboard'
+LOGOUT_REDIRECT_URL = 'recipes:landing_page'

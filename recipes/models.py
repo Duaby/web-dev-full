@@ -5,9 +5,9 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 class Subscriber(models.Model):
     """Email subscribers for newsletter"""
     name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True, db_index=True)  # ADDED INDEX
-    subscribed_at = models.DateTimeField(auto_now_add=True, db_index=True)  # ADDED INDEX
-    is_active = models.BooleanField(default=True, db_index=True)  # ADDED INDEX
+    email = models.EmailField(unique=True, db_index=True)
+    subscribed_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    is_active = models.BooleanField(default=True, db_index=True)
 
     class Meta:
         ordering = ['-subscribed_at']
@@ -26,7 +26,7 @@ class Category(models.Model):
     """Recipe categories"""
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)
-    slug = models.SlugField(unique=True, db_index=True)  # Already indexed by unique
+    slug = models.SlugField(unique=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -45,15 +45,22 @@ class Category(models.Model):
 
 
 class Recipe(models.Model):
-    """Restaurant recipes"""
+    """Restaurant recipes - both admin and user submitted"""
     DIFFICULTY_CHOICES = [
         ('easy', 'Easy'),
         ('medium', 'Medium'),
         ('hard', 'Hard'),
     ]
+    
+    APPROVAL_STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('pending', 'Pending Review'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
 
-    title = models.CharField(max_length=200, db_index=True)  # ADDED INDEX
-    slug = models.SlugField(unique=True, db_index=True)  # Already indexed by unique
+    title = models.CharField(max_length=200, db_index=True)
+    slug = models.SlugField(unique=True, db_index=True)
     description = models.TextField()
     ingredients = models.TextField(help_text="One ingredient per line")
     instructions = models.TextField()
@@ -73,35 +80,55 @@ class Recipe(models.Model):
         max_length=10,
         choices=DIFFICULTY_CHOICES,
         default='medium',
-        db_index=True  # ADDED INDEX
+        db_index=True
     )
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
         related_name='recipes',
-        db_index=True  # Already indexed by FK
+        db_index=True
     )
     author = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        db_index=True  # Already indexed by FK
+        db_index=True
     )
     image_url = models.URLField(blank=True, null=True)
-    is_featured = models.BooleanField(default=False, db_index=True)  # ADDED INDEX
-    created_at = models.DateTimeField(auto_now_add=True, db_index=True)  # ADDED INDEX
+    is_featured = models.BooleanField(default=False, db_index=True)
+    
+    # NEW: Approval system fields
+    approval_status = models.CharField(
+        max_length=20,
+        choices=APPROVAL_STATUS_CHOICES,
+        default='approved',  # Admin recipes auto-approved
+        db_index=True
+    )
+    is_user_recipe = models.BooleanField(default=False, db_index=True)
+    rejection_reason = models.TextField(blank=True, null=True)
+    reviewed_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='reviewed_recipes'
+    )
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['-created_at']
         indexes = [
-            # Composite indexes for common queries
             models.Index(fields=['-created_at'], name='recipe_created_idx'),
             models.Index(fields=['category', '-created_at'], name='recipe_cat_date_idx'),
             models.Index(fields=['is_featured', '-created_at'], name='recipe_featured_idx'),
             models.Index(fields=['difficulty', '-created_at'], name='recipe_diff_date_idx'),
             models.Index(fields=['title'], name='recipe_title_idx'),
+            models.Index(fields=['approval_status', '-created_at'], name='recipe_approval_date_idx'),
+            models.Index(fields=['is_user_recipe', 'approval_status'], name='recipe_user_approval_idx'),
         ]
         verbose_name = 'Recipe'
         verbose_name_plural = 'Recipes'
@@ -125,6 +152,10 @@ class Recipe(models.Model):
     def get_review_count(self):
         """Get count of approved reviews"""
         return self.reviews.filter(is_approved=True).count()
+    
+    def get_favorite_count(self):
+        """Get number of users who favorited this recipe"""
+        return self.favorited_by.count()
 
 
 class Review(models.Model):
@@ -133,23 +164,22 @@ class Review(models.Model):
         Recipe,
         on_delete=models.CASCADE,
         related_name='reviews',
-        db_index=True  # Already indexed by FK
+        db_index=True
     )
     reviewer_name = models.CharField(max_length=100)
-    reviewer_email = models.EmailField(db_index=True)  # ADDED INDEX
+    reviewer_email = models.EmailField(db_index=True)
     rating = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)],
-        db_index=True  # ADDED INDEX
+        db_index=True
     )
     comment = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True, db_index=True)  # ADDED INDEX
-    is_approved = models.BooleanField(default=False, db_index=True)  # ADDED INDEX
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    is_approved = models.BooleanField(default=False, db_index=True)
 
     class Meta:
         ordering = ['-created_at']
         unique_together = ['recipe', 'reviewer_email']
         indexes = [
-            # Composite indexes for common queries
             models.Index(fields=['recipe', 'is_approved'], name='review_recipe_approved_idx'),
             models.Index(fields=['is_approved', '-created_at'], name='review_approved_date_idx'),
             models.Index(fields=['rating', '-created_at'], name='review_rating_date_idx'),
@@ -170,11 +200,11 @@ class Review(models.Model):
 class ContactMessage(models.Model):
     """Contact form submissions"""
     name = models.CharField(max_length=100)
-    email = models.EmailField(db_index=True)  # ADDED INDEX
+    email = models.EmailField(db_index=True)
     subject = models.CharField(max_length=200)
     message = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True, db_index=True)  # ADDED INDEX
-    is_read = models.BooleanField(default=False, db_index=True)  # ADDED INDEX
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    is_read = models.BooleanField(default=False, db_index=True)
 
     class Meta:
         ordering = ['-created_at']
@@ -193,3 +223,27 @@ class ContactMessage(models.Model):
         if not self.is_read:
             self.is_read = True
             self.save(update_fields=['is_read'])
+
+
+class Favorite(models.Model):
+    """User favorite recipes"""
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='favorites'
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='favorited_by'
+    )
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    
+    class Meta:
+        unique_together = ['user', 'recipe']
+        ordering = ['-created_at']
+        verbose_name = 'Favorite'
+        verbose_name_plural = 'Favorites'
+    
+    def __str__(self):
+        return f"{self.user.username} ❤️ {self.recipe.title}"

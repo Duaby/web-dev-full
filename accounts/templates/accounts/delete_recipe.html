@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Recipe - Culinary Secrets</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #fef9f5 0%, #fff 100%); color: #2c2c2c; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        
+        .container { max-width: 600px; width: 100%; }
+        
+        .delete-card { background: white; border-radius: 24px; padding: 50px; box-shadow: 0 20px 80px rgba(0,0,0,0.12); text-align: center; }
+        
+        .delete-icon { font-size: 80px; margin-bottom: 24px; }
+        
+        .delete-card h1 { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 900; color: #dc3545; margin-bottom: 16px; }
+        
+        .delete-card p { font-size: 16px; color: #666; margin-bottom: 12px; line-height: 1.7; }
+        
+        .recipe-info { background: #f8f9fa; border-radius: 16px; padding: 24px; margin: 30px 0; text-align: left; }
+        
+        .recipe-info h2 { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: #2c2c2c; margin-bottom: 12px; }
+        
+        .recipe-meta { display: flex; gap: 20px; font-size: 14px; color: #999; flex-wrap: wrap; }
+        
+        .warning-box { background: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; border-radius: 8px; margin: 24px 0; text-align: left; }
+        
+        .warning-box strong { color: #856404; display: block; margin-bottom: 8px; font-size: 15px; }
+        
+        .warning-box p { color: #856404; font-size: 14px; line-height: 1.6; margin: 0; }
+        
+        .button-group { display: flex; gap: 15px; margin-top: 30px; }
+        
+        .btn { flex: 1; padding: 16px 32px; border-radius: 12px; font-weight: 700; font-size: 15px; text-decoration: none; transition: all 0.3s; border: none; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; font-family: 'Inter', sans-serif; }
+        
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-danger:hover { background: #c82333; transform: translateY(-2px); box-shadow: 0 10px 30px rgba(220, 53, 69, 0.3); }
+        
+        .btn-secondary { background: white; color: #666; border: 2px solid #e8e8e8; }
+        .btn-secondary:hover { border-color: #2c2c2c; color: #2c2c2c; }
+        
+        @media (max-width: 480px) {
+            .delete-card { padding: 30px 20px; }
+            .delete-card h1 { font-size: 28px; }
+            .button-group { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="delete-card">
+            <div class="delete-icon">🗑️</div>
+            <h1>Delete Recipe?</h1>
+            <p>You are about to permanently delete this recipe.</p>
+            <p>This action cannot be undone.</p>
+
+            <div class="recipe-info">
+                <h2>{{ recipe.title }}</h2>
+                <div class="recipe-meta">
+                    <span>📁 {{ recipe.category.name }}</span>
+                    <span>⏱️ {{ recipe.total_time }} minutes</span>
+                    <span>👨‍🍳 {{ recipe.get_difficulty_display }}</span>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ Warning</strong>
+                <p>Deleting this recipe will also remove:</p>
+                <ul style="margin: 10px 0 0 20px; padding: 0;">
+                    <li>All reviews and ratings</li>
+                    <li>All favorites from other users</li>
+                    <li>Recipe statistics and history</li>
+                </ul>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="button-group">
+                    <button type="submit" class="btn btn-danger">Yes, Delete Recipe</button>
+                    <a href="{% url 'accounts:dashboard' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
