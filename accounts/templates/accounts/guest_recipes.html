@@ -472,7 +472,7 @@
         {% if recipes %}
             <div class="recipes-grid">
                 {% for recipe in recipes %}
-                    <div class="recipe-card" onclick='window.location.href="{% url "accounts:recipe_detail" recipe.slug %}"'>
+                   <div class="recipe-card" data-url="{% url 'accounts:recipe_detail' recipe.slug %}" onclick="window.location.href=this.dataset.url">
                         <div class="recipe-image">
                             {% if recipe.category.name == "Italian" %}🍝
                             {% elif recipe.category.name == "American" %}🍔
